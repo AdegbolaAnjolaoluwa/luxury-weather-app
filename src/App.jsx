@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from './hooks/useLocation';
 import { useWeather } from './hooks/useWeather';
+import ExtraStats from './components/ExtraStats';
 
 // Simple loading screen
 const LoadingScreen = ({ cityName }) => (
@@ -255,7 +256,7 @@ const PermissionToast = ({ state, onAllow, onSkip }) => {
 // Main App
 const App = () => {
   const { lat, lon, cityName, timezone, permissionState, loading: locLoading, setLocation, getCurrentPosition } = useLocation();
-  const { current, hourly, daily, loading: wxLoading, error, refetch } = useWeather(lat, lon, timezone);
+  const { current, hourly, daily, extra, loading: wxLoading, error, refetch } = useWeather(lat, lon, timezone);
 
   const isLoading = locLoading || wxLoading;
 
@@ -285,6 +286,7 @@ const App = () => {
           <main className="relative z-10 max-w-lg mx-auto">
             <WeatherDisplay weather={current} cityName={cityName} />
             <StatsGrid weather={current} />
+            <ExtraStats extra={extra} daily={daily} />
             <HourlyForecast hourly={hourly} timezone={timezone} />
             <WeeklyForecast daily={daily} />
             

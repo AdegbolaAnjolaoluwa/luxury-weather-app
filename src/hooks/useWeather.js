@@ -19,7 +19,7 @@ export const useWeather = (lat, lon, timezone) => {
 
     try {
       const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,winddirection_10m,relativehumidity_2m,uv_index&hourly=temperature_2m,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&timezone=${timezone}&forecast_days=7`
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m,winddirection_10m,relativehumidity_2m,uv_index,visibility,pressure_msl,dewpoint_2m,cloudcover&hourly=temperature_2m,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max,sunrise,sunset&timezone=${timezone}&forecast_days=7`
       );
 
       if (!response.ok) {
@@ -39,6 +39,13 @@ export const useWeather = (lat, lon, timezone) => {
         windDir: data.current.winddirection_10m,
         humidity: data.current.relativehumidity_2m,
         uvIndex: Math.round(data.current.uv_index),
+        // New fields
+        visibility: data.current.visibility,
+        pressure: Math.round(data.current.pressure_msl),
+        dewPoint: Math.round(data.current.dewpoint_2m),
+        cloudCover: data.current.cloudcover,
+        sunrise: data.daily.sunrise[0],
+        sunset: data.daily.sunset[0],
       };
 
       console.log('✅ Processed current weather:', current);
@@ -64,6 +71,8 @@ export const useWeather = (lat, lon, timezone) => {
         lo: Math.round(data.daily.temperature_2m_min[index]),
         precipChance: data.daily.precipitation_probability_max[index] ?? 0,
         maxWind: Math.round(data.daily.windspeed_10m_max[index]),
+        sunrise: data.daily.sunrise[index],
+        sunset: data.daily.sunset[index],
       }));
 
       setWeatherData({ current, hourly, daily });
