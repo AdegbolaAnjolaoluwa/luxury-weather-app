@@ -256,7 +256,17 @@ const PermissionToast = ({ state, onAllow, onSkip }) => {
 // Main App
 const App = () => {
   const { lat, lon, cityName, timezone, permissionState, loading: locLoading, setLocation, getCurrentPosition } = useLocation();
-  const { current, hourly, daily, extra, loading: wxLoading, error, refetch } = useWeather(lat, lon, timezone);
+  const { current, hourly, daily, loading: wxLoading, error, refetch } = useWeather(lat, lon, timezone);
+  
+  // Extract extra data from current for ExtraStats
+  const extra = current ? {
+    sunrise: current.sunrise,
+    sunset: current.sunset,
+    visibility: current.visibility,
+    pressure: current.pressure,
+    dewPoint: current.dewPoint,
+    cloudCover: current.cloudCover,
+  } : null;
 
   const isLoading = locLoading || wxLoading;
 

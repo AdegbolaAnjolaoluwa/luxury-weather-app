@@ -75,7 +75,17 @@ export const useWeather = (lat, lon, timezone) => {
         sunset: data.daily.sunset[index],
       }));
 
-      setWeatherData({ current, hourly, daily });
+      // Extract extra data for Additional Info section
+      const extra = {
+        sunrise: data.daily.sunrise[0],
+        sunset: data.daily.sunset[0],
+        visibility: data.current.visibility,
+        pressure: Math.round(data.current.pressure_msl),
+        dewPoint: Math.round(data.current.dewpoint_2m),
+        cloudCover: data.current.cloudcover,
+      };
+
+      setWeatherData({ current, hourly, daily, extra });
     } catch (err) {
       setError(err.message);
     } finally {
